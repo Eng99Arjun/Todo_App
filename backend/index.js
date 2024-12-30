@@ -1,16 +1,20 @@
 const express = require('express');
 const app = express();
 const { createTodo, updateTodo} = require('./types');
+const { todo } = require('./db');
 
 
 app.use(express.json());
 
-app.get('/todos', (req, res) => {
-    res.json({ message: 'Hello from server!' });
+app.get('/todos', async (req, res) => {
+    const todos = await todo.find({});
+    res.json({
+        todos
     });
+});
 
 
-app.post('/todo', (req, res) => {    
+app.post('/todo', async (req, res) => {    
     const createPayload =req.body;
     const parsedPayload = createTodo.parse(createPayload);
     if(!parsedPayload.success){
@@ -20,10 +24,20 @@ app.post('/todo', (req, res) => {
         })
         return;
     }
+    await todo.create({
+        title:createPayload.title,
+        description:createPayload.description,
+        completed:false
+    })
+    res.json({
+        message: 'Todo created successfully'    
+    })
+
     });
 
 
-app.put('/completed', (req, res) => {
+
+app.put('/completed', async (req, res) => {
     const updatePayload = req.body;
     const parsedPayload = updateTodo.parse(updatePayload);
         if(!parsedPayload.success){
@@ -33,10 +47,17 @@ app.put('/completed', (req, res) => {
         })
         return;
     }
-
-    });
+    await todo.updateOne({
+        _id: req.body.id
+    },{
+        completed: true
+    })
+    res.json({
+        message: 'Todo Marked as completed'
+    })
+});
 
 
 app.listen(5000, () => {
     console.log('Server listening on port 5000');
-    });
+});
