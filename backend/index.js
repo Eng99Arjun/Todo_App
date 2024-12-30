@@ -15,25 +15,24 @@ app.get('/todos', async (req, res) => {
 
 
 app.post('/todo', async (req, res) => {    
-    const createPayload =req.body;
-    const parsedPayload = createTodo.parse(createPayload);
-    if(!parsedPayload.success){
+    const createPayload = req.body;
+    const parsedPayload = createTodo.safeParse(createPayload);
+    if (!parsedPayload.success) {
+        console.error('Validation Error:', parsedPayload.error); // Log the error details
         res.status(411).json({
             message: 'Invalid data provided',
-            data: parsedPayload.error
         })
         return;
     }
     await todo.create({
-        title:createPayload.title,
-        description:createPayload.description,
-        completed:false
+        title: createPayload.title,
+        description: createPayload.description,
+        completed: false
     })
     res.json({
         message: 'Todo created successfully'    
-    })
-
     });
+});
 
 
 
