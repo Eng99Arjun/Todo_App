@@ -2,9 +2,12 @@ const express = require('express');
 const app = express();
 const { createTodo, updateTodo} = require('./types');
 const { todo } = require('./db');
+const cors = require('cors');
+
 
 
 app.use(express.json());
+app.use(cors());
 
 app.get('/todos', async (req, res) => {
     const todos = await todo.find({});
