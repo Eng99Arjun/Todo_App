@@ -23,7 +23,7 @@ export function CreateTodo(){
             padding:10,
             margin:10
         }} onClick={() => {
-            fetch("http:localhost:3000/todo",{
+            fetch("http://localhost:3000/todo",{
                 method:"POST",
                 body:JSON.stringify({
                     title:title,
@@ -35,7 +35,7 @@ export function CreateTodo(){
             })
                 .then(async function(res){
                     const json = await res.json();
-                    console.log(json);
+                    alert("Todo created");
                 })
         }} >Add a Todo</button>        
     </div>
